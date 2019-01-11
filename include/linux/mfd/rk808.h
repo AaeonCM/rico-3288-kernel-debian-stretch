@@ -788,11 +788,46 @@ enum {
 	BOOST_ILMIN_250MA,
 };
 
+struct rk808;
+
+struct rk808_board {
+	int irq;
+	int irq_base;
+	int irq_gpio;
+	int wakeup;
+	struct regulator_init_data *rk808_init_data[14];
+	struct device_node *of_node[14];
+
+	int hub2_rst;
+	int hub1_rst;
+	int usb2_pwr_en;
+	int camera_nfc_pwr_en;
+	int modem_pwr;
+	int barcode_pwr;
+	int nfc_en;
+	int hdmi_en;
+	int vibrator_gpio;
+	int lcd_pwr_en;
+	int lcd_bl_en;
+
+};
+
 struct rk808 {
 	struct i2c_client *i2c;
 	struct regmap_irq_chip_data *irq_data;
 	struct regmap_irq_chip_data *battery_irq_data;
 	struct regmap *regmap;
+	int hub2_rst;
+	int hub1_rst;
+	int usb2_pwr_en;
+	int camera_nfc_pwr_en;
+	int modem_pwr;
+	int barcode_pwr;
+	int nfc_en;
+	int vibrator_gpio;
+	int hdmi_en;
+	int lcd_pwr_en;
+	int lcd_bl_en;
 	long variant;
 };
 

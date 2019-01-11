@@ -118,6 +118,15 @@ config USB_SERIAL_WHITEHEAT
 	  To compile this driver as a module, choose M here: the
 	  module will be called whiteheat.
 
+config USB_SERIAL_XR21V1410
+	tristate "USB EXAR XR21V1410 USB Serial Driver"
+	help
+	  Say Y here if you want to use a ARK Micro 3116 USB to Serial
+	  device.
+
+	  To compile this driver as a module, choose M here: the
+	  module will be called ark3116
+
 config USB_SERIAL_DIGI_ACCELEPORT
 	tristate "USB Digi International AccelePort USB Serial Driver"
 	---help---

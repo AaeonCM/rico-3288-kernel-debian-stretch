@@ -95,6 +95,8 @@ static const char bt_name[] =
     #else
         "ap6210_24M"
     #endif
+#elif defined(CONFIG_AP6XXX)//6234
+        "ap6255"
 #elif defined(CONFIG_AP6330)
 		"ap6330"
 #elif defined(CONFIG_AP6476)
@@ -308,7 +310,7 @@ static int rfkill_rk_set_power(void *data, bool blocked)
 		if (gpio_is_valid(reset->io))
         {
 			gpio_direction_output(reset->io, !reset->enable);
-            msleep(20);
+            msleep(200);
 			gpio_direction_output(reset->io, reset->enable);
         }
 

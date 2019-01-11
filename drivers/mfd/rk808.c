@@ -23,6 +23,10 @@
 #include <linux/mfd/core.h>
 #include <linux/module.h>
 #include <linux/of_device.h>
+#include <linux/of_gpio.h>
+#include <linux/of.h>
+#include <linux/of_device.h>
+#include <linux/delay.h>
 #include <linux/regmap.h>
 
 struct rk808_reg_data {
@@ -754,7 +758,7 @@ static int rk808_probe(struct i2c_client *client,
 	const struct mfd_cell *cell;
 	u8 on_source = 0, off_source = 0;
 	int msb, lsb, reg_num, cell_num;
-	int ret, i, pm_off = 0;
+	int ret, i, pm_off = 0, temp_gpio=0;
 	unsigned int on, off;
 
 	if (!client->irq) {
@@ -935,6 +939,235 @@ static int rk808_probe(struct i2c_client *client,
 		ret = sysfs_create_file(rk8xx_kobj, &rk8xx_attrs.attr);
 		if (ret)
 			dev_err(&client->dev, "create rk8xx sysfs error\n");
+	}
+
+	temp_gpio = of_get_named_gpio(np,"hdmi_en",0);
+
+	if (!gpio_is_valid(temp_gpio)) {
+		printk("invalid gpio: %d\n",  temp_gpio);
+
+	}
+	if (temp_gpio) {
+		ret = gpio_request(temp_gpio, "rk808_hdmi_en");
+		if (ret < 0) {
+			printk("Failed to request gpio %d with ret:""%d\n",temp_gpio, ret);
+
+		}
+		gpio_export(temp_gpio, 1);
+		gpio_direction_output(temp_gpio, 1);
+		gpio_set_value(temp_gpio,1);
+
+	}
+
+	temp_gpio = of_get_named_gpio(np,"hub2_rst",0);
+	if (!gpio_is_valid(temp_gpio)) {
+		printk("invalid gpio: %d\n",  temp_gpio);
+
+	}
+	if (temp_gpio) {
+		ret = gpio_request(temp_gpio, "rk808_hub2_rst");
+		if (ret < 0) {
+			printk("Failed to request gpio %d with ret:""%d\n",temp_gpio, ret);
+			//return IRQ_NONE;
+		}
+		gpio_export(temp_gpio, 1);
+		gpio_direction_output(temp_gpio, 1);
+		gpio_set_value(temp_gpio, 0);
+		mdelay(100);
+		gpio_set_value(temp_gpio, 1);
+		mdelay(300);
+		gpio_set_value(temp_gpio, 0);
+	}
+
+	temp_gpio = of_get_named_gpio(np,"hub1_rst",0);
+	if (!gpio_is_valid(temp_gpio)) {
+		printk("invalid gpio: %d\n",  temp_gpio);
+
+	}
+	if (temp_gpio) {
+		ret = gpio_request(temp_gpio, "rk808_hub1_rst");
+		if (ret < 0) {
+			printk("Failed to request gpio %d with ret:""%d\n",temp_gpio, ret);
+			//return IRQ_NONE;
+		}
+		gpio_export(temp_gpio, 1);
+		gpio_direction_output(temp_gpio, 1);
+		gpio_set_value(temp_gpio, 0);
+		mdelay(100);
+		gpio_set_value(temp_gpio, 1);
+		mdelay(300);
+		gpio_set_value(temp_gpio, 0);
+	}
+
+	temp_gpio = of_get_named_gpio(np,"usb2_pwr_en",0);
+	if (!gpio_is_valid(temp_gpio)) {
+		printk("invalid gpio: %d\n",  temp_gpio);
+
+	}
+	if (temp_gpio) {
+		ret = gpio_request(temp_gpio, "rk808_usb2_pwr_en");
+		if (ret < 0) {
+			printk("Failed to request gpio %d with ret:""%d\n",temp_gpio, ret);
+			//return IRQ_NONE;
+		}
+		gpio_export(temp_gpio, 1);
+		gpio_direction_output(temp_gpio, 1);
+		gpio_set_value(temp_gpio,1);
+	}
+	temp_gpio = of_get_named_gpio(np,"lcd_pwr_en",0);
+	if (!gpio_is_valid(temp_gpio)) {
+		printk("invalid gpio: %d\n",  temp_gpio);
+
+	}
+	if (temp_gpio) {
+		ret = gpio_request(temp_gpio, "rk808_lcd_pwr_en");
+		if (ret < 0) {
+			printk("Failed to request gpio %d with ret:""%d\n",temp_gpio, ret);
+			//return IRQ_NONE;
+		}
+		gpio_export(temp_gpio, 1);
+		gpio_direction_output(temp_gpio, 1);
+		gpio_set_value(temp_gpio,1);
+	}
+
+	temp_gpio = of_get_named_gpio(np,"lcd_bl_en",0);
+
+	if (!gpio_is_valid(temp_gpio)) {
+		printk("invalid gpio: %d\n",  temp_gpio);
+
+	}
+	if (temp_gpio) {
+		ret = gpio_request(temp_gpio, "rk808_lcd_bl_en");
+		if (ret < 0) {
+			printk("Failed to request gpio %d with ret:""%d\n",temp_gpio, ret);
+		}
+		gpio_export(temp_gpio, 1);
+		gpio_direction_output(temp_gpio, 1);
+		gpio_set_value(temp_gpio,1);
+	}
+
+	temp_gpio = of_get_named_gpio(np,"3v3GPI0",0);
+	if (!gpio_is_valid(temp_gpio)) {
+		printk("invalid gpio: %d\n",  temp_gpio);
+	}
+	if (temp_gpio) {
+		ret = gpio_request(temp_gpio, "rk808_3v3GPI0");
+		if (ret < 0) {
+			printk("Failed to request gpio %d with ret:""%d\n",temp_gpio, ret);
+
+		}
+		gpio_export(temp_gpio, 1);
+		gpio_direction_input(temp_gpio);
+		//gpio_set_value(temp_gpio,1);
+	}
+
+	temp_gpio = of_get_named_gpio(np,"3v3GPI1",0);
+	if (!gpio_is_valid(temp_gpio)) {
+		printk("invalid gpio: %d\n",  temp_gpio);
+	}
+	if (temp_gpio) {
+		ret = gpio_request(temp_gpio, "rk808_3v3GPI1");
+		if (ret < 0) {
+			printk("Failed to request gpio %d with ret:""%d\n",temp_gpio, ret);
+
+		}
+		gpio_export(temp_gpio, 1);
+		gpio_direction_input(temp_gpio);
+		//gpio_set_value(temp_gpio,1);
+	}
+
+	temp_gpio = of_get_named_gpio(np,"3v3GPI2",0);
+	if (!gpio_is_valid(temp_gpio)) {
+		printk("invalid gpio: %d\n",  temp_gpio);
+	}
+	if (temp_gpio) {
+		ret = gpio_request(temp_gpio, "rk808_3v3GPI2");
+		if (ret < 0) {
+			printk("Failed to request gpio %d with ret:""%d\n",temp_gpio, ret);
+		}
+		gpio_export(temp_gpio, 1);
+		gpio_direction_input(temp_gpio);
+		//gpio_set_value(temp_gpio,1);
+	}
+
+	temp_gpio = of_get_named_gpio(np,"3v3GPI3",0);
+
+	if (!gpio_is_valid(temp_gpio)) {
+		printk("invalid gpio: %d\n",  temp_gpio);
+	}
+	if (temp_gpio) {
+		ret = gpio_request(temp_gpio, "rk808_3v3GPI3");
+		if (ret < 0) {
+			printk("Failed to request gpio %d with ret:""%d\n",temp_gpio, ret);
+
+		}
+		gpio_export(temp_gpio, 1);
+		gpio_direction_input(temp_gpio);
+		//gpio_set_value(temp_gpio,1);
+	}
+
+	temp_gpio = of_get_named_gpio(np,"3v3GPO0",0);
+
+	if (!gpio_is_valid(temp_gpio)) {
+		printk("invalid gpio: %d\n",  temp_gpio);
+	}
+	if (temp_gpio) {
+		ret = gpio_request(temp_gpio, "rk808_3v3GPO0");
+		if (ret < 0) {
+			printk("Failed to request gpio %d with ret:""%d\n",temp_gpio, ret);
+
+		}
+		gpio_export(temp_gpio, 1);
+		gpio_direction_output(temp_gpio, 1);
+		gpio_set_value(temp_gpio,1);
+	}
+
+	temp_gpio = of_get_named_gpio(np,"3v3GPO1",0);
+
+	if (!gpio_is_valid(temp_gpio)) {
+		printk("invalid gpio: %d\n",  temp_gpio);
+	}
+	if (temp_gpio) {
+		ret = gpio_request(temp_gpio, "rk808_3v3GPO1");
+		if (ret < 0) {
+			printk("Failed to request gpio %d with ret:""%d\n",temp_gpio, ret);
+
+		}
+		gpio_export(temp_gpio, 1);
+		gpio_direction_output(temp_gpio, 1);
+		gpio_set_value(temp_gpio,1);
+	}
+
+	temp_gpio = of_get_named_gpio(np,"3v3GPO2",0);
+
+	if (!gpio_is_valid(temp_gpio)) {
+		printk("invalid gpio: %d\n",  temp_gpio);
+	}
+	if (temp_gpio) {
+		ret = gpio_request(temp_gpio, "rk808_3v3GPO2");
+		if (ret < 0) {
+			printk("Failed to request gpio %d with ret:""%d\n",temp_gpio, ret);
+
+		}
+		gpio_export(temp_gpio, 1);
+		gpio_direction_output(temp_gpio, 1);
+		gpio_set_value(temp_gpio,1);
+	}
+
+	temp_gpio = of_get_named_gpio(np,"3v3GPO3",0);
+
+	if (!gpio_is_valid(temp_gpio)) {
+		printk("invalid gpio: %d\n",  temp_gpio);
+	}
+	if (temp_gpio) {
+		ret = gpio_request(temp_gpio, "rk808_3v3GPO3");
+		if (ret < 0) {
+			printk("Failed to request gpio %d with ret:""%d\n",temp_gpio, ret);
+
+		}
+		gpio_export(temp_gpio, 1);
+		gpio_direction_output(temp_gpio, 1);
+		gpio_set_value(temp_gpio,1);
 	}
 
 	return 0;

@@ -835,6 +835,14 @@ KBUILD_ARFLAGS := $(call ar-option,D)
 include scripts/Makefile.kasan
 include scripts/Makefile.extrawarn
 
+ifneq ($(TARGET_PRODUCT),)
+KCFLAGS += -DAAEON_BOARD_NAME=\"$(TARGET_PRODUCT)\"
+endif
+
+ifneq ($(LOCALVERSION),)
+KCFLAGS += -DBUILD_VERSION=\"$(LOCALVERSION)\"
+endif
+
 # Add any arch overrides and user supplied CPPFLAGS, AFLAGS and CFLAGS as the
 # last assignments
 KBUILD_CPPFLAGS += $(ARCH_CPPFLAGS) $(KCPPFLAGS)
